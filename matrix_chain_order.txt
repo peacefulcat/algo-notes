@@ -1,0 +1,25 @@
+MATRIX-CHAIN-ORDER(p)
+    
+    // 注意，这里的 p 是一个数组，表示矩阵的维度，长度为 n+1，其中第 i 个矩阵的维度为 p[i-1] x p[i]
+    // 假设 p = [10, 20, 30, 40]。则矩阵 A1 的维度为 10x20，A2 的维度为 20x30，A3 的维度为 30x40。
+    n = p.length - 1 // 矩阵的个数
+    
+    // m[i, j] 表示计算矩阵 Ai 到 Aj 的最小标量乘法次数, s[i, j] 表示最优划分的位置
+    let m[1..n, 1..n] and s[1..n-1, 2..n] be new arrays
+    
+    // 初始化 m[i, i] = 0，因为单个矩阵不需要乘法
+    for i = 1 to n:
+        m[i, i] = 0
+
+    // 计算 m[i, j] 和 s[i, j]
+    for l = 2 to n:  // l 是链的长度
+        for i = 1 to n - l + 1: // 枚举起点
+            j = i + l - 1 // 终点
+            m[i, j] = ∞ // 初始化为无穷大
+            for k = i to j - 1: // 枚举划分点
+                q = m[i, k] + m[k + 1, j] + p[i - 1] * p[k] * p[j] // 计算当前划分的标量乘法次数
+                if q < m[i, j]: // 更新最小值
+                    m[i, j] = q
+                    s[i, j] = k
+    
+    return m, s
